@@ -4,43 +4,49 @@ import { SnakeEnv } from '@/lib/snakeEnv';
 import GameBoard from '@/components/GameBoard';
 import Controls from '@/components/Controls';
 import TrainingPanel from '@/components/TrainingPanel';
+import useWebSocket from '@/hooks/useWebSocket';
 
 const env = new SnakeEnv(10);
 const agent = new QLearningAgent(4);
+const socketUrl = 'ws://localhost:3001';
 
 export default function Home() {
     const [isRunning, setIsRunning] = useState(false);
     const [isTraining, setIsTraining] = useState(false);
 
+    const { state, isConnected, sendMessage } = useWebSocket(socketUrl);
+
+    if (isConnected && state.length > 0) {
+        env.reset();
+        env.step(state[0]);
+    }
+
     const startGame = () => {
-        console.log('Start button clicked');
         setIsRunning(true);
-    
+
         const tick = () => {
+            if (!isRunning) return;
+
             const state = env.getState().toString();
             const action = agent.getAction(state);
+            sendMessage({ action });
+
             const nextState = env.step(action).toString();
             const reward = env.isDone() ? -10 : 1;
             agent.update(state, action, reward, nextState);
-    
+
             if (env.isDone()) {
-                console.log('Game Over');
-                env.reset(); // ✅ Réinitialisation de l'environnement
-                setTimeout(tick, 200); // ✅ On redémarre immédiatement le jeu
+                env.reset();
+                setTimeout(tick, 200);
             } else {
                 setTimeout(tick, 200);
             }
         };
-    
-        tick(); // Lance la boucle d'inférence
-    };
-    
-    
 
-    const pauseGame = () => {
-        setIsRunning(false);
+        tick();
     };
 
+    const pauseGame = () => setIsRunning(false);
     const stopGame = () => {
         setIsRunning(false);
         env.reset();
@@ -48,44 +54,54 @@ export default function Home() {
 
     const startTraining = () => {
         setIsTraining(true);
-    
+
         const train = () => {
             if (!isTraining) return;
-    
+
             const state = env.getState().toString();
-            console.log(`Training state: ${state}`); // ✅ Vérifie l'état d'entraînement
-    
             const action = agent.getAction(state);
-            console.log(`Training action: ${action}`); // ✅ Vérifie si une action est prise
-    
+            sendMessage({ action });
+
             const nextState = env.step(action).toString();
-            console.log(`Training next state: ${nextState}`); // ✅ Vérifie si le jeu progresse
-    
             const reward = env.isDone() ? -10 : 1;
             agent.update(state, action, reward, nextState);
-    
+
             if (!env.isDone()) {
                 setTimeout(train, 50);
             } else {
-                console.log('Training ended');
                 setIsTraining(false);
             }
         };
-    
+
         train();
     };
-    
 
-    const stopTraining = () => {
-        setIsTraining(false);
-    };
+    const stopTraining = () => setIsTraining(false);
 
     return (
-        <div style={{ padding: '20px' }}>
+        <div className="container">
             <h1>Snake AI Platform</h1>
-            <GameBoard env={env} isRunning={isRunning} />
-            <Controls onStart={startGame} onPause={pauseGame} onStop={stopGame} isRunning={isRunning} />
-            <TrainingPanel onStartTraining={startTraining} onStopTraining={stopTraining} isTraining={isTraining} />
+
+            <div className="game-wrapper">
+                <div className="game-area">
+                    <GameBoard env={env} isRunning={isRunning} />
+                    <Controls
+                        onStart={startGame}
+                        onPause={pauseGame}
+                        onStop={stopGame}
+                        isRunning={isRunning}
+                    />
+                </div>
+                <TrainingPanel
+                    onStartTraining={startTraining}
+                    onStopTraining={stopTraining}
+                    isTraining={isTraining}
+                />
+            </div>
+
+            <p className="status">
+                Status: {isConnected ? '🟢 Connected' : '🔴 Disconnected'}
+            </p>
         </div>
     );
 }

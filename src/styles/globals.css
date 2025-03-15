@@ -1,12 +1,135 @@
-/* Reset CSS */
-* {
+/* General Styling */
+body {
+    background-color: #121212;
+    color: #e0e0e0;
+    font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-  }
-  
-  body {
-    font-family: Arial, sans-serif;
-    background-color: #f5f5f5;
-  }
-  
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+/* Title */
+h1 {
+    color: #ffffff;
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* Game and Training Panel */
+.game-wrapper {
+    display: flex;
+    gap: 40px; /* ✅ Espace entre le jeu et le panneau */
+    align-items: center;
+}
+
+/* Canvas with Neon Effect */
+canvas {
+    border: 2px solid #444;
+    background-color: #1e1e1e;
+    border-radius: 8px;
+    width: 400px;
+    height: 400px;
+    box-shadow: 0 0 20px #00ffcc, 0 0 40px #00ffcc, 0 0 80px #00ffcc; /* ✅ Neon effect */
+}
+
+/* Controls - Centered */
+.game-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Controls */
+button {
+    background-color: #1a73e8;
+    color: #ffffff;
+    padding: 12px 24px;
+    margin: 5px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    width: 120px; /* ✅ Aligner les boutons parfaitement */
+}
+
+button:hover {
+    background-color: #135bc2;
+}
+
+button:disabled {
+    background-color: #444;
+    cursor: not-allowed;
+}
+
+/* Connection Status */
+.status {
+    margin-top: 20px;
+    font-size: 1.2rem;
+    color: #bbb;
+}
+
+/* Connection Status Colors */
+.status .connected {
+    color: #00ff00;
+}
+
+.status .disconnected {
+    color: #ff4c4c;
+}
+
+/* Training Panel */
+.training-panel {
+    background-color: #1e1e1e;
+    padding: 20px;
+    border: 1px solid #444;
+    border-radius: 8px;
+    width: 250px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+
+    /* ✅ Centre le contenu dans le panneau */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.training-panel h3 {
+    font-size: 1.2rem;
+    color: #ffffff;
+    margin-bottom: 16px;
+}
+
+/* ✅ Aligne bien les boutons */
+.training-panel button {
+    width: 180px; /* ✅ Largeur uniforme */
+    margin: 8px 0; /* ✅ Espacement vertical uniforme */
+    background-color: #1a73e8;
+    color: #ffffff;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.training-panel button:hover {
+    background-color: #135bc2;
+}
+
+.training-panel button:disabled {
+    background-color: #444;
+    cursor: not-allowed;
+}
